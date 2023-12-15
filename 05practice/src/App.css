@@ -1,0 +1,5 @@
+iframe {
+  filter: grayscale(1);
+  filter: contrast(1.2);
+  opacity: 0.4;
+}
