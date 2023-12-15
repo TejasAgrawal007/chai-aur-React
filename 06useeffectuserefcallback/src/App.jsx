@@ -1,0 +1,146 @@
+import { useState, useCallback, useEffect, useRef } from 'react'
+import './App.css'
+
+function App() {
+  const [length, setLength] = useState(8);
+  const [numberAllowed, setNumberAllowed] = useState(false);
+  const [charAllowed, setCharAllowed] = useState(false);
+  const [password, setPassword] = useState("");
+
+  // useRef
+
+  const passwordRef = useRef(null);
+
+  const copyPasswordToClipBord = useCallback(() => {
+    passwordRef.current?.select();
+    passwordRef.current.setSelectionRange(0, 8); // set a range for select a given range.
+    window.navigator.clipboard.writeText(password);
+  }, [password]);
+
+  const passwordGenerator = useCallback(() => {
+    let pass = "";
+    let str = "ABCDEFGHIJKLMNOPQUERSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    if (numberAllowed) {
+      str += "0123456789"
+    }
+    if (charAllowed) {
+      str += "!@#$%^&*_+=[]{}~`"
+    }
+
+    for (let i = 1; i <= length; i++) {
+      let char = Math.floor(Math.random() * str.length + 1);
+
+      pass += str.charAt(char);
+    }
+    setPassword(pass);
+  },
+    [length, numberAllowed, charAllowed, setPassword])
+
+  useEffect(() => {
+    passwordGenerator();
+  }, [length, charAllowed, numberAllowed, passwordGenerator])
+
+  return (
+    <>
+      <div className="h-48 bg-gray-600 w-[48vw] flex justify-center   relative left-[25vw] top-10 rounded-md"  >
+        <h1 className="font-semibold text-center text-white font-lg text-2xl absolute top-5 ">Password Generator</h1>
+
+        <div className=' flex justify-center  items-center '>
+
+          <input
+            type="text"
+            ref={passwordRef}
+            value={password}
+            className='outline-none w-[30vw] py-1 px-3 rounded-sm'
+            placeholder='password'
+            readOnly
+          />
+
+          <button className='bg-blue-400 px-5 py-1 rounded-sm text-white font-semibold'>Copy</button>
+        </div>
+
+
+        <div className="flex text-sm gap-x-2 absolute bottom-5 ">
+          <div className="flex items-center gap-x-1">
+            <input
+
+              onClick={copyPasswordToClipBord}
+
+              type="range"
+              min={6}
+              max={50}
+              value={length}
+              className='cursor-pointer'
+              onChange={(e) => { setLength(e.target.value) }}
+            />
+            <label className='text-blue-300'>Length: {length}</label>
+          </div>
+
+          <input
+            type="checkbox"
+            defaultChecked={numberAllowed}
+            id='numberInput'
+            onChange={() => {
+              setNumberAllowed((prev) => !prev);
+            }}
+          />
+          <label className='text-blue-300'>Numbers</label>
+
+
+          <input
+            type="checkbox"
+            defaultChecked={charAllowed}
+            id='charInput'
+            onChange={() => {
+              setNumberAllowed((prev) => !prev);
+            }}
+          />
+          <label className='text-blue-300'>Characters</label>
+        </div>
+      </div>
+
+
+      <footer class="text-gray-400  body-font absolute bottom-0 w-full">
+        <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+          <a class="flex title-font font-medium items-center md:justify-start justify-center text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span class="ml-3 text-xl">Password Generator</span>
+          </a>
+          <p class="text-sm text-gray-400 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2024 Password Generator —
+            <a href="https://tejasagrawall.netlify.app/" class="text-gray-500 ml-1" target="_blank" rel="noopener noreferrer">@tejas</a>
+          </p>
+          <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+            <a class="text-gray-400">
+              <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+              </svg>
+            </a>
+            <a class="ml-3 text-gray-400">
+              <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+              </svg>
+            </a>
+            <a class="ml-3 text-gray-400">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+              </svg>
+            </a>
+            <a class="ml-3 text-gray-400">
+              <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
+                <path stroke="none" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
+                <circle cx="4" cy="4" r="2" stroke="none"></circle>
+              </svg>
+            </a>
+          </span>
+        </div>
+      </footer>
+
+    </>
+  )
+}
+
+export default App
